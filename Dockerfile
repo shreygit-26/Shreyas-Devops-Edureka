@@ -6,12 +6,12 @@ RUN apt install -y openjdk-11-jdk wget
 
 RUN mkdir /usr/local/tomcat
 
-RUN wget https://downloads.apache.org/tomcat/tomcat-9/v9.0.81/bin/apache-tomcat-9.0.81.tar.gz -O /tmp/apache-tomcat-9.0.81.tar.gz
+RUN wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.82/bin/apache-tomcat-9.0.82.tar.gz -O /tmp/apache-tomcat-9.0.82.tar.gz
 
-RUN tar xvfz /tmp/apache-tomcat-9.0.81.tar.gz -C /usr/local/tomcat
+RUN tar xvfz /tmp/apache-tomcat-9.0.82.tar.gz -C /usr/local/tomcat
 
-COPY **/*.war /usr/local/tomcat/apache-tomcat-9.0.81/webapps/
+COPY **/*.war /usr/local/tomcat/apache-tomcat-9.0.82/webapps/
 
 EXPOSE 9090
 
-CMD ["/usr/local/tomcat/apache-tomcat-9.0.81/bin/catalina.sh", "run"]
+CMD ["/usr/local/tomcat/apache-tomcat-9.0.82/bin/catalina.sh", "run"]
