@@ -1,4 +1,4 @@
-FROM docker.io/library/ubuntu:22.04
+FROM docker.io/library/ubuntu:20.04
 
 RUN apt-get -y update && apt-get -y upgrade
 
