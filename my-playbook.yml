@@ -1,0 +1,67 @@
+---
+- name: Build Docker Image and Push to Docker Hub
+  hosts: target-node
+  become: yes
+  become_method: sudo
+  become_user: jenkin
+  vars_files:
+    - /home/edureka/ansible/docker_credentials.yml
+  tasks:
+    - name: Build Docker Image
+      docker_image:
+        name: "shrey2602/abc-image"
+        path: "/home/jenkin/Shreyas-Devops-Edureka"
+        tag: "New"
+
+    - name: Push Docker Image to Docker Hub
+      docker_login:
+        username: "{{ docker_hub_username }}"
+        password: "{{ docker_hub_password }}"
+      register: out_login  # Register the output of docker_login task
+
+    - name: Push Docker Image to Docker Hub
+      docker_image:
+        name: "shrey2602/abc-image"
+        tag: New
+        push: yes
+      register: out_push  # Register the output of docker_image push task
+
+    - name: Run Docker Container
+      docker_container:
+        name: "my-abc-app"
+        image: "shrey2602/abc-image:New"
+        state: started
+        ports:
+          - "5001:8080"
+      register: out_container  # Register the output of docker_container task
+
+    - name: Debug Output for Docker Tasks
+      debug:
+        var: out_login.stdout_lines + out_push.stdout_lines + out_container.stdout_lines
+  #End of the block for Docker tasks
+
+
+- name: Deploy Artifacts via K8S
+  hosts: localhost  
+  become: yes
+  become_method: sudo
+  become_user: edureka
+  tasks:
+    - name: Create Kubernetes deployment for deploying artifacts
+      command: "kubectl --kubeconfig=/etc/kubernetes/admin.conf apply -f /home/edureka/ansible/k8-deployment.yml"
+      register: out_deployment  # Register the output of kubectl apply task
+
+    - name: Create Kubernetes Service
+      command: "kubectl --kubeconfig=/etc/kubernetes/admin.conf apply -f /home/edureka/ansible/k8-svc.yml"
+      register: out_service  # Register the output of kubectl apply task
+
+    - name: Create Kubernetes Pods
+      command: "kubectl --kubeconfig=/etc/kubernetes/admin.conf apply -f /home/edureka/ansible/k8-pod.yml"
+      register: out_pods  # Register the output of kubectl apply task
+
+    - name: Debug Output for Kubernetes Tasks
+      debug:
+        var: out_deployment.stdout_lines + out_service.stdout_lines + out_pods.stdout_lines
+  # End of the block for Kubernetes tasks
+
+
