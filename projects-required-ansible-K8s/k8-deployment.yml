@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: abc-dep-app
+  labels:
+    app: abc-app
+spec:
+  replicas: 2
+  minReadySeconds: 30
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: abc-app
+  template:
+    metadata:
+      labels:
+        app: abc-app
+    spec:
+      containers:
+      - name: app
+        image: shrey2602/my-tomcat-image:New
+ 
